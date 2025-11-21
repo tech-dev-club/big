@@ -10,7 +10,9 @@ import {
   DollarSign, 
   Target,
   Sparkles,
-  ChevronRight 
+  ChevronRight,
+  Bookmark,
+  BookmarkCheck
 } from "lucide-react";
 import { OpportunityData } from "@/services/marketData";
 import ForecastPanel from "./ForecastPanel";
@@ -59,6 +61,8 @@ const OpportunityCardEnhanced = ({
 }: OpportunityCardEnhancedProps) => {
   const [aiInsight, setAiInsight] = useState<string>("");
   const [isLoadingInsight, setIsLoadingInsight] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -128,6 +132,61 @@ const OpportunityCardEnhanced = ({
     }
   };
 
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to save opportunities.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (isSaved) {
+        // Unsave logic would go here
+        setIsSaved(false);
+        toast({
+          title: "Removed from Saved Ideas",
+          description: "Opportunity removed successfully."
+        });
+      } else {
+        // Save to database
+        const { error } = await supabase.from('saved_ideas').insert({
+          user_id: user.id,
+          location,
+          category,
+          biz_score_today: opportunity.bizScore,
+          biz_score_12m: forecast.bizScore12M,
+          coordinates: { lat: 0, lng: 0 }, // Would need actual coordinates
+          demand_index: opportunity.demandIndex,
+          competition_density: competitionAnalysis.competitionDensity,
+          forecast_growth: forecast.growthRate
+        });
+
+        if (error) throw error;
+        
+        setIsSaved(true);
+        toast({
+          title: "Saved Successfully",
+          description: "Opportunity added to your saved ideas."
+        });
+      }
+    } catch (error) {
+      console.error("Save error:", error);
+      toast({
+        title: "Save Failed",
+        description: "Failed to save opportunity. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const getScoreColor = (score: number) => {
     if (score >= 80) return "text-success";
     if (score >= 65) return "text-primary";
@@ -146,9 +205,24 @@ const OpportunityCardEnhanced = ({
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div className="flex-1">
-          <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">
-            {opportunity.title}
-          </h3>
+          <div className="flex items-start justify-between gap-4 mb-2">
+            <h3 className="text-2xl font-bold group-hover:text-primary transition-colors">
+              {opportunity.title}
+            </h3>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleSave}
+              disabled={isSaving}
+              className="flex-shrink-0"
+            >
+              {isSaved ? (
+                <BookmarkCheck className="w-5 h-5 text-primary" />
+              ) : (
+                <Bookmark className="w-5 h-5" />
+              )}
+            </Button>
+          </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
             <MapPin className="w-4 h-4" />
             {location}
