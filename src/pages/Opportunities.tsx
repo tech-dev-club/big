@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Select,
   SelectContent,
@@ -11,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, MapPin, TrendingUp, Sparkles, Target } from "lucide-react";
+import { Search, MapPin, TrendingUp, Sparkles, Target, Building2 } from "lucide-react";
 import { searchIndianCities, LocationData } from "@/services/geocoding";
 import { generateMarketData, generateOpportunities } from "@/services/marketData";
 import { calculateBizScore, getScoreRating } from "@/services/scoring";
@@ -32,6 +33,14 @@ const Opportunities = () => {
   const [marketData, setMarketData] = useState<any>(null);
   const [showResults, setShowResults] = useState(false);
 
+  // Popular cities for quick selection
+  const popularCities = [
+    "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Chennai", 
+    "Kolkata", "Pune", "Ahmedabad", "Jaipur", "Surat",
+    "Lucknow", "Kanpur", "Nagpur", "Indore", "Coimbatore",
+    "Kochi", "Chandigarh", "Guwahati", "Bhopal", "Visakhapatnam"
+  ];
+
   // Handle location search
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
@@ -48,6 +57,14 @@ const Opportunities = () => {
     setSelectedLocation(location);
     setSearchInput(location.formattedAddress);
     setSearchResults([]);
+  };
+
+  // Handle quick city selection
+  const handleQuickCitySelect = (cityName: string) => {
+    const results = searchIndianCities(cityName);
+    if (results.length > 0) {
+      handleLocationSelect(results[0]);
+    }
   };
 
   // Handle opportunity search
@@ -88,69 +105,140 @@ const Opportunities = () => {
 
           {/* Search Section */}
           <Card className="p-6 mb-8 bg-card border-border">
-            <div className="grid md:grid-cols-12 gap-4">
-              {/* Location Search */}
-              <div className="md:col-span-5">
-                <label className="text-sm font-medium mb-2 block">Location in India</label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Enter city, PIN code, or address..."
-                    value={searchInput}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    className="pl-10 bg-background border-border"
-                  />
+            <Tabs defaultValue="search" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="search">Search Location</TabsTrigger>
+                <TabsTrigger value="popular">Popular Cities</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="search">
+                <div className="grid md:grid-cols-12 gap-4">
+                  {/* Location Search */}
+                  <div className="md:col-span-5">
+                    <label className="text-sm font-medium mb-2 block">Location in India</label>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Enter city, PIN code, or address..."
+                        value={searchInput}
+                        onChange={(e) => handleSearchChange(e.target.value)}
+                        className="pl-10 bg-background border-border"
+                      />
+                      
+                      {/* Search Results Dropdown */}
+                      {searchResults.length > 0 && (
+                        <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
+                          {searchResults.map((result, index) => (
+                            <button
+                              key={index}
+                              onClick={() => handleLocationSelect(result)}
+                              className="w-full px-4 py-3 text-left hover:bg-muted transition-colors flex items-start gap-3"
+                            >
+                              <MapPin className="w-4 h-4 text-primary flex-shrink-0 mt-1" />
+                              <div>
+                                <div className="font-medium">{result.name}</div>
+                                <div className="text-sm text-muted-foreground">{result.state}, India</div>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Category Selection */}
+                  <div className="md:col-span-5">
+                    <label className="text-sm font-medium mb-2 block">Business Category</label>
+                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                      <SelectTrigger className="bg-background border-border">
+                        <SelectValue placeholder="Select a category..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {BUSINESS_CATEGORIES.map((cat) => (
+                          <SelectItem key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Analyze Button */}
+                  <div className="md:col-span-2 flex items-end">
+                    <Button
+                      onClick={handleAnalyze}
+                      disabled={!selectedLocation || !selectedCategory}
+                      className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                    >
+                      <Target className="w-4 h-4 mr-2" />
+                      Analyze
+                    </Button>
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="popular">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Building2 className="w-5 h-5 text-primary" />
+                    <p className="text-sm text-muted-foreground">
+                      Select a city to quickly explore business opportunities
+                    </p>
+                  </div>
                   
-                  {/* Search Results Dropdown */}
-                  {searchResults.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
-                      {searchResults.map((result, index) => (
-                        <button
-                          key={index}
-                          onClick={() => handleLocationSelect(result)}
-                          className="w-full px-4 py-3 text-left hover:bg-muted transition-colors flex items-start gap-3"
-                        >
-                          <MapPin className="w-4 h-4 text-primary flex-shrink-0 mt-1" />
-                          <div>
-                            <div className="font-medium">{result.name}</div>
-                            <div className="text-sm text-muted-foreground">{result.state}, India</div>
-                          </div>
-                        </button>
-                      ))}
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                    {popularCities.map((city) => (
+                      <Button
+                        key={city}
+                        variant="outline"
+                        onClick={() => handleQuickCitySelect(city)}
+                        className={`justify-start ${
+                          selectedLocation?.name === city ? 'bg-primary/10 border-primary' : ''
+                        }`}
+                      >
+                        <MapPin className="w-4 h-4 mr-2" />
+                        {city}
+                      </Button>
+                    ))}
+                  </div>
+
+                  {selectedLocation && (
+                    <div className="mt-6 pt-6 border-t border-border">
+                      <div className="grid md:grid-cols-12 gap-4">
+                        {/* Category Selection */}
+                        <div className="md:col-span-10">
+                          <label className="text-sm font-medium mb-2 block">Business Category</label>
+                          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                            <SelectTrigger className="bg-background border-border">
+                              <SelectValue placeholder="Select a category..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {BUSINESS_CATEGORIES.map((cat) => (
+                                <SelectItem key={cat.id} value={cat.id}>
+                                  {cat.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        {/* Analyze Button */}
+                        <div className="md:col-span-2 flex items-end">
+                          <Button
+                            onClick={handleAnalyze}
+                            disabled={!selectedLocation || !selectedCategory}
+                            className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                          >
+                            <Target className="w-4 h-4 mr-2" />
+                            Analyze
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
-              </div>
-
-              {/* Category Selection */}
-              <div className="md:col-span-5">
-                <label className="text-sm font-medium mb-2 block">Business Category</label>
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="bg-background border-border">
-                    <SelectValue placeholder="Select a category..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {BUSINESS_CATEGORIES.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Analyze Button */}
-              <div className="md:col-span-2 flex items-end">
-                <Button
-                  onClick={handleAnalyze}
-                  disabled={!selectedLocation || !selectedCategory}
-                  className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-                >
-                  <Target className="w-4 h-4 mr-2" />
-                  Analyze
-                </Button>
-              </div>
-            </div>
+              </TabsContent>
+            </Tabs>
           </Card>
 
           {/* Results Section */}
