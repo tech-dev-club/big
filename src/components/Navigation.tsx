@@ -11,6 +11,8 @@ const Navigation = () => {
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Opportunities", path: "/opportunities" },
+    { name: "Saved Ideas", path: "/saved" },
+    { name: "Compare", path: "/compare" },
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
   ];
@@ -54,9 +56,11 @@ const Navigation = () => {
 
           {/* CTA Button */}
           <div className="hidden md:block">
-            <Button className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity">
-              Get Started
-            </Button>
+            <Link to="/auth">
+              <Button className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity">
+                Sign In
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -85,9 +89,11 @@ const Navigation = () => {
                   {link.name}
                 </Link>
               ))}
-              <Button className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity w-full">
-                Get Started
-              </Button>
+              <Link to="/auth" className="w-full">
+                <Button className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity w-full">
+                  Sign In
+                </Button>
+              </Link>
             </div>
           </div>
         )}
