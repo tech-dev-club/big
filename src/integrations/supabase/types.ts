@@ -14,7 +14,119 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      saved_ideas: {
+        Row: {
+          biz_score_12m: number
+          biz_score_today: number
+          category: string
+          competition_density: string | null
+          coordinates: Json
+          created_at: string
+          demand_index: number | null
+          financials: Json | null
+          forecast_growth: number | null
+          id: string
+          location: string
+          recommendation: Json | null
+          swot: Json | null
+          user_id: string
+        }
+        Insert: {
+          biz_score_12m: number
+          biz_score_today: number
+          category: string
+          competition_density?: string | null
+          coordinates: Json
+          created_at?: string
+          demand_index?: number | null
+          financials?: Json | null
+          forecast_growth?: number | null
+          id?: string
+          location: string
+          recommendation?: Json | null
+          swot?: Json | null
+          user_id: string
+        }
+        Update: {
+          biz_score_12m?: number
+          biz_score_today?: number
+          category?: string
+          competition_density?: string | null
+          coordinates?: Json
+          created_at?: string
+          demand_index?: number | null
+          financials?: Json | null
+          forecast_growth?: number | null
+          id?: string
+          location?: string
+          recommendation?: Json | null
+          swot?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      saved_reports: {
+        Row: {
+          created_at: string
+          id: string
+          idea_id: string | null
+          report_data: Json
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          idea_id?: string | null
+          report_data: Json
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          idea_id?: string | null
+          report_data?: Json
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_reports_idea_id_fkey"
+            columns: ["idea_id"]
+            isOneToOne: false
+            referencedRelation: "saved_ideas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
