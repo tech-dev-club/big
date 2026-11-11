@@ -38,6 +38,8 @@ export const searchIndianCities = (query: string): LocationData[] => {
  * Handles both simple city names and formatted addresses
  */
 export const getCityCoordinates = (cityNameOrAddress: string): LocationData | null => {
+  if (!cityNameOrAddress?.trim()) return null;
+
   // Extract city name from formatted address (e.g., "Mumbai, Maharashtra, India" -> "Mumbai")
   const cityName = cityNameOrAddress.split(',')[0].trim();
   
