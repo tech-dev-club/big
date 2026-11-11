@@ -47,6 +47,8 @@ function toRadians(degrees: number): number {
  * @returns Formatted string with appropriate unit
  */
 export function formatDistance(distanceKm: number): string {
+  if (!Number.isFinite(distanceKm) || distanceKm < 0) return "N/A";
+
   if (distanceKm < 1) {
     return `${Math.round(distanceKm * 1000)}m`;
   }
