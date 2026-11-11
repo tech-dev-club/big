@@ -68,8 +68,10 @@ const SavedIdeas = () => {
 
       if (error) throw error;
 
-      setSavedIdeas(savedIdeas.filter(idea => idea.id !== id));
-      setSelectedForComparison(selectedForComparison.filter(selectedId => selectedId !== id));
+      setSavedIdeas((currentIdeas) => currentIdeas.filter((idea) => idea.id !== id));
+      setSelectedForComparison((currentSelection) =>
+        currentSelection.filter((selectedId) => selectedId !== id)
+      );
       toast.success("Idea removed from saved list");
     } catch (error: any) {
       toast.error("Failed to delete: " + error.message);
