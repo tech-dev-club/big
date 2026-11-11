@@ -57,7 +57,7 @@ export function sortByDistance<T extends { coordinates: Coordinates }>(
   locations: T[],
   referencePoint: Coordinates
 ): T[] {
-  return locations.sort((a, b) => {
+  return [...locations].sort((a, b) => {
     const distA = calculateDistance(referencePoint, a.coordinates);
     const distB = calculateDistance(referencePoint, b.coordinates);
     return distA - distB;
