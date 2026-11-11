@@ -70,23 +70,15 @@ export const parsePinCode = (pinCode: string): boolean => {
 };
 
 /**
- * Get city by PIN code (mock implementation)
- * In production, use India Post API or similar service
+ * Resolve a PIN code to a city.
+ *
+ * PIN-code format validation alone cannot identify a location. Return null
+ * until an authoritative PIN-code lookup provider is configured.
  */
 export const getCityByPinCode = async (pinCode: string): Promise<LocationData | null> => {
   if (!parsePinCode(pinCode)) return null;
-  
-  // Mock: Return a random Indian city (replace with real API in production)
-  const randomCity = INDIAN_CITIES[Math.floor(Math.random() * INDIAN_CITIES.length)];
-  
-  return {
-    name: randomCity.name,
-    state: randomCity.state,
-    lat: randomCity.lat,
-    lng: randomCity.lng,
-    population: randomCity.population,
-    formattedAddress: `${randomCity.name}, ${randomCity.state}, India (PIN: ${pinCode})`,
-  };
+
+  return null;
 };
 
 /**
