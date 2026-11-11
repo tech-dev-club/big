@@ -126,13 +126,18 @@ export function generateOpportunityHeatmap(
 ): HeatmapData {
   const points: HeatmapPoint[] = [];
   
+  // Index competition points once so matching does not scan the entire
+  // competition grid for every demand point.
+  const competitionByCell = new Map<string, HeatmapPoint>();
+  competitionHeatmap.points.forEach(point => {
+    const key = `${Math.round(point.coordinates.lat * 1000)}:${Math.round(point.coordinates.lng * 1000)}`;
+    competitionByCell.set(key, point);
+  });
+
   // Match points from both heatmaps
   demandHeatmap.points.forEach(demandPoint => {
-    // Find closest competition point
-    const compPoint = competitionHeatmap.points.find(cp => 
-      Math.abs(cp.coordinates.lat - demandPoint.coordinates.lat) < 0.001 &&
-      Math.abs(cp.coordinates.lng - demandPoint.coordinates.lng) < 0.001
-    );
+    const key = `${Math.round(demandPoint.coordinates.lat * 1000)}:${Math.round(demandPoint.coordinates.lng * 1000)}`;
+    const compPoint = competitionByCell.get(key);
     
     // Opportunity = high demand, low competition
     const competitionIntensity = compPoint?.intensity || 0;
