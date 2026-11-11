@@ -21,9 +21,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // The auth listener can receive a newer session before getSession resolves.
+    // Do not let the initial lookup overwrite that newer auth event.
+    let receivedAuthEvent = false;
+
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        receivedAuthEvent = true;
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
@@ -32,6 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (receivedAuthEvent) return;
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
