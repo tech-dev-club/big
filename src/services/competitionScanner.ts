@@ -221,6 +221,8 @@ export function getCompetitionDensityAtPoint(
   allCompetitors: Competitor[],
   influenceRadius: number = 0.5 // km
 ): number {
+  if (!Number.isFinite(influenceRadius) || influenceRadius < 0) return 0;
+
   const nearbyCompetitors = allCompetitors.filter(
     comp => calculateDistance(point, comp.coordinates) <= influenceRadius
   );
