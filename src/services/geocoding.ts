@@ -14,9 +14,8 @@ export interface LocationData {
  * Returns matching cities from our database
  */
 export const searchIndianCities = (query: string): LocationData[] => {
-  if (!query || query.length < 2) return [];
-  
-  const searchTerm = query.toLowerCase();
+  const searchTerm = query?.trim().toLowerCase() ?? "";
+  if (searchTerm.length < 2) return [];
   return INDIAN_CITIES
     .filter(city => 
       city.name.toLowerCase().includes(searchTerm) || 
