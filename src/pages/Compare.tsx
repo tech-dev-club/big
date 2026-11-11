@@ -33,7 +33,9 @@ const Compare = () => {
   }, [user, searchParams]);
 
   const loadComparison = async () => {
-    const ids = searchParams.get("ids")?.split(",") || [];
+    const ids = [...new Set(
+      (searchParams.get("ids") || "").split(",").map((id) => id.trim()).filter(Boolean)
+    )];
     if (ids.length < 2) {
       toast.error("Select at least 2 ideas to compare");
       navigate("/saved");
