@@ -176,6 +176,8 @@ export function generateFinancialProjection(inputs: FinancialInputs): FinancialP
 
 // Utility function to format currency
 export function formatCurrency(amount: number, currency: string = "INR"): string {
+  if (!Number.isFinite(amount)) return "N/A";
+
   if (amount >= 10000000) {
     return `${currency} ${(amount / 10000000).toFixed(2)}Cr`;
   } else if (amount >= 100000) {
