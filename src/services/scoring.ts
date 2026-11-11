@@ -84,11 +84,11 @@ export const calculateBizScore = (
   const demandScore = Math.round(marketData.demandIndex);
   const competitionScore = Math.round(competitionPenalty);
   const locationScore = Math.round(normalizedDensity);
-  const economicScore = Math.round(
-    (marketData.avgIncome / 10) * 33 + 
-    (marketData.internetPenetration) * 0.33 + 
-    (marketData.literacyRate) * 0.33
-  );
+  const economicScore = Math.round(Math.min(100, Math.max(0,
+    (marketData.avgIncome / 10) * 33 +
+    marketData.internetPenetration * 0.33 +
+    marketData.literacyRate * 0.33
+  )));
   
   // Determine opportunity type
   const opportunityType = determineOpportunityType(
