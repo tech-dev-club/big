@@ -27,6 +27,10 @@ export const generateForecast = (
     "technology": 0.25,
     "education": 0.18,
     "health-wellness": 0.20,
+    "tech-ai-ml": 0.25,
+    "tech-fintech": 0.22,
+    "tech-edtech": 0.18,
+    "tech-healthtech": 0.20,
   };
 
   const annualGrowthRate = categoryGrowthRates[category] || 0.12;
