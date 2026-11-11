@@ -64,11 +64,13 @@ export function generateDemandHeatmap(
   }
   
   const intensities = points.map(p => p.intensity);
-  
+
   return {
     points,
-    maxIntensity: Math.max(...intensities),
-    minIntensity: Math.min(...intensities)
+    // An empty grid is a valid result when the radius or grid produces no
+    // points. Keep the bounds finite so map consumers can render safely.
+    maxIntensity: Math.max(...intensities, 0),
+    minIntensity: Math.min(...intensities, 0)
   };
 }
 
