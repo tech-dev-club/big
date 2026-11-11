@@ -89,6 +89,8 @@ export const geocodeLocation = async (
   query: string,
   mapboxToken?: string
 ): Promise<LocationData | null> => {
+  if (!query?.trim()) return null;
+
   if (!mapboxToken) {
     // Fallback to local search
     const results = searchIndianCities(query);
