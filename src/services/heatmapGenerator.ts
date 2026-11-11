@@ -29,6 +29,9 @@ export function generateDemandHeatmap(
   gridSize: number = 20
 ): HeatmapData {
   const points: HeatmapPoint[] = [];
+  if (!Number.isFinite(radiusKm) || radiusKm <= 0 || !Number.isInteger(gridSize) || gridSize <= 0) {
+    return { points, maxIntensity: 0, minIntensity: 0 };
+  }
   const step = (radiusKm * 2) / gridSize;
   
   for (let i = 0; i < gridSize; i++) {
