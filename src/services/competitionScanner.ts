@@ -36,6 +36,20 @@ export function scanCompetition(
   category: string,
   radiusKm: number = 3
 ): CompetitionAnalysis {
+  // A non-positive or non-finite radius cannot describe a meaningful scan area.
+  // Return a stable empty result rather than generating invalid coordinates.
+  if (!Number.isFinite(radiusKm) || radiusKm <= 0) {
+    return {
+      totalCount: 0,
+      nearestCompetitors: [],
+      competitionDensity: "Low",
+      densityScore: 0,
+      averageDistance: 0,
+      averageRating: 0,
+      recommendations: ["Provide a positive search radius to analyze nearby competition"],
+    };
+  }
+
   // Generate mock competitors based on category and location
   const competitors = generateMockCompetitors(location, category, radiusKm);
   
