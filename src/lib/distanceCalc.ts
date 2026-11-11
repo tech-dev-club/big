@@ -25,7 +25,10 @@ export function calculateDistance(coord1: Coordinates, coord2: Coordinates): num
     Math.cos(toRadians(coord2.lat)) * 
     Math.sin(dLng / 2) * Math.sin(dLng / 2);
   
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  // Floating-point rounding can move `a` just outside [0, 1], which would
+  // otherwise make sqrt(1 - a) return NaN for nearly antipodal points.
+  const clampedA = Math.min(1, Math.max(0, a));
+  const c = 2 * Math.atan2(Math.sqrt(clampedA), Math.sqrt(1 - clampedA));
   const distance = R * c;
   
   return Math.round(distance * 100) / 100; // Round to 2 decimal places
