@@ -1,73 +1,102 @@
-# Welcome to your Lovable project
+# BizRadar
 
-## Project info
+BizRadar is a React and TypeScript application for exploring business opportunities in India. It combines location search, market indicators, opportunity scoring, competitor context, forecasting, and feasibility reports in one interface.
 
-**URL**: https://lovable.dev/projects/98fb04b1-3c3b-4df1-a7f9-d4bd0bc78a99
+> **Data note:** Several market and opportunity metrics are currently generated from local/mock data. They are exploratory estimates, not verified live market research or investment advice.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- Search Indian cities and explore location-based opportunities.
+- Review demand, competition, population, and economic indicators.
+- Compare business opportunities and view BizScore breakdowns.
+- Explore forecasts, competitor context, and feasibility reports.
+- Visualize locations with Mapbox GL JS.
+- Sign in and manage saved data through Supabase integration.
 
-**Use Lovable**
+## Tech stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/98fb04b1-3c3b-4df1-a7f9-d4bd0bc78a99) and start prompting.
+- React 18, TypeScript, and Vite
+- React Router
+- Tailwind CSS and shadcn/ui
+- Supabase JavaScript client
+- Mapbox GL JS
+- Recharts
 
-Changes made via Lovable will be committed automatically to this repo.
+## Requirements
 
-**Use your preferred IDE**
+- Node.js 18 or newer
+- npm
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Setup
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. Clone the repository and enter the project directory.
+2. Install dependencies:
 
-Follow these steps:
+   ```bash
+   npm install
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+3. Create a local `.env` file from the example:
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+   ```bash
+   cp .env.example .env
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+4. Add the Supabase project URL and publishable key supplied by the project maintainer.
+5. Start the development server:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+   ```bash
+   npm run dev
+   ```
+
+The app uses these Vite environment variables:
+
+| Variable | Purpose |
+| --- | --- |
+| `VITE_SUPABASE_URL` | Supabase project URL |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable/anon key |
+| `VITE_SUPABASE_PROJECT_ID` | Project identifier used by project tooling |
+
+Do not put Supabase service-role keys, database passwords, or other server secrets in `VITE_*` variables. Vite exposes those values to browser code. The interactive map currently asks for a Mapbox public token in the map UI.
+
+## Available scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the local Vite development server |
+| `npm run build` | Create a production build |
+| `npm run build:dev` | Create a development-mode build |
+| `npm run lint` | Run ESLint |
+| `npm run preview` | Preview the production build locally |
+
+## Project layout
+
+```text
+src/
+  components/       Reusable UI and feature components
+  contexts/         React context providers, including authentication
+  hooks/            Reusable React hooks
+  integrations/     Supabase client and generated database types
+  lib/              Domain logic, scoring, calculations, and constants
+  pages/            Route-level application pages
+  services/         Geocoding, market data, forecasting, and AI helpers
+supabase/
+  functions/        Supabase Edge Functions
+  migrations/       Database migrations
 ```
 
-**Edit a file directly in GitHub**
+## Data and limitations
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- Market indicators and many opportunity metrics are simulated or locally generated.
+- PIN-code lookup is not connected to an authoritative postal database. It returns no location until a real provider is integrated.
+- Map rendering requires a Mapbox public token.
+- AI insight generation depends on the configured Supabase Edge Function and its server-side provider secret.
+- Always validate assumptions with current local research before making business or financial decisions.
 
-**Use GitHub Codespaces**
+## Contributing
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. Keep changes focused, explain how they were validated, and never commit local environment files or credentials.
 
-## What technologies are used for this project?
+## License
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/98fb04b1-3c3b-4df1-a7f9-d4bd0bc78a99) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+No license is currently declared in this repository. Contact the repository maintainers before reusing or distributing the code.
