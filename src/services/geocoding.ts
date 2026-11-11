@@ -106,10 +106,20 @@ export const geocodeLocation = async (
     if (!data.features || data.features.length === 0) return null;
     
     const feature = data.features[0];
+    const center = feature?.center;
+    if (
+      !Array.isArray(center) ||
+      center.length < 2 ||
+      !Number.isFinite(center[0]) ||
+      !Number.isFinite(center[1])
+    ) {
+      return null;
+    }
+
     return {
       name: feature.text,
-      lat: feature.center[1],
-      lng: feature.center[0],
+      lat: center[1],
+      lng: center[0],
       formattedAddress: feature.place_name,
     };
   } catch (error) {
