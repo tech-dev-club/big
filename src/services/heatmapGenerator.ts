@@ -32,18 +32,23 @@ export function generateDemandHeatmap(
   if (!Number.isFinite(radiusKm) || radiusKm <= 0 || !Number.isInteger(gridSize) || gridSize <= 0) {
     return { points, maxIntensity: 0, minIntensity: 0 };
   }
+  const longitudeScale = Math.cos(centerPoint.lat * Math.PI / 180);
+  if (Math.abs(longitudeScale) < 1e-6) {
+    return { points, maxIntensity: 0, minIntensity: 0 };
+  }
+
   const step = (radiusKm * 2) / gridSize;
   
   for (let i = 0; i < gridSize; i++) {
     for (let j = 0; j < gridSize; j++) {
       const lat = centerPoint.lat - radiusKm / 111 + (i * step / 111);
-      const lng = centerPoint.lng - radiusKm / (111 * Math.cos(centerPoint.lat * Math.PI / 180)) 
-                   + (j * step / (111 * Math.cos(centerPoint.lat * Math.PI / 180)));
+      const lng = centerPoint.lng - radiusKm / (111 * longitudeScale) 
+                   + (j * step / (111 * longitudeScale));
       
       // Calculate distance from center
       const distanceFromCenter = Math.sqrt(
         Math.pow((lat - centerPoint.lat) * 111, 2) + 
-        Math.pow((lng - centerPoint.lng) * 111 * Math.cos(centerPoint.lat * Math.PI / 180), 2)
+        Math.pow((lng - centerPoint.lng) * 111 * longitudeScale, 2)
       );
       
       if (distanceFromCenter <= radiusKm) {
@@ -93,8 +98,8 @@ export function generateCompetitionHeatmap(
   for (let i = 0; i < gridSize; i++) {
     for (let j = 0; j < gridSize; j++) {
       const lat = centerPoint.lat - radiusKm / 111 + (i * step / 111);
-      const lng = centerPoint.lng - radiusKm / (111 * Math.cos(centerPoint.lat * Math.PI / 180)) 
-                   + (j * step / (111 * Math.cos(centerPoint.lat * Math.PI / 180)));
+      const lng = centerPoint.lng - radiusKm / (111 * longitudeScale) 
+                   + (j * step / (111 * longitudeScale));
       
       const point = { lat, lng };
       
