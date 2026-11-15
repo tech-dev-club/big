@@ -120,8 +120,16 @@ export function generateFinancialProjection(inputs: FinancialInputs): FinancialP
     : 36; // Cap at 3 years if not profitable
 
   // Profit margin calculation
-  const profitMarginMin = Math.max(5, Math.round(((baseRevenueMin - operatingCostMax) / baseRevenueMin) * 100));
-  const profitMarginMax = Math.min(45, Math.round(((baseRevenueMax - operatingCostMin) / baseRevenueMax) * 100));
+  // A zero-revenue scenario has no meaningful percentage margin. Avoid
+  // dividing by zero and do not present a forced positive margin when costs
+  // exceed revenue.
+  const calculateProfitMargin = (revenue: number, operatingCost: number) =>
+    revenue <= 0
+      ? 0
+      : Math.round(((revenue - operatingCost) / revenue) * 100);
+
+  const profitMarginMin = calculateProfitMargin(baseRevenueMin, operatingCostMax);
+  const profitMarginMax = calculateProfitMargin(baseRevenueMax, operatingCostMin);
 
   // Year 1 and Year 3 projections
   const year1GrowthFactor = Math.min(inputs.forecastGrowth, 1.3);
