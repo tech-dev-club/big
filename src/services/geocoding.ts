@@ -40,7 +40,7 @@ export const getCityCoordinates = (cityNameOrAddress: string): LocationData | nu
   if (!cityNameOrAddress?.trim()) return null;
 
   // Extract city name from formatted address (e.g., "Mumbai, Maharashtra, India" -> "Mumbai")
-  const cityName = cityNameOrAddress.split(',')[0].trim();
+  const cityName = cityNameOrAddress.trim().split(',')[0].trim();
   
   const city = INDIAN_CITIES.find(
     c => c.name.toLowerCase() === cityName.toLowerCase()
