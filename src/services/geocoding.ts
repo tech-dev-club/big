@@ -106,7 +106,7 @@ export const geocodeLocation = async (
     if (!response.ok) throw new Error("Geocoding failed");
     
     const data = await response.json();
-    if (!data.features || data.features.length === 0) return null;
+    if (!Array.isArray(data.features) || data.features.length === 0) return null;
     
     const feature = data.features[0];
     return {
