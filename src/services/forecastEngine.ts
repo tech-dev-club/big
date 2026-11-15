@@ -33,7 +33,8 @@ export const generateForecast = (
     "tech-healthtech": 0.20,
   };
 
-  const annualGrowthRate = categoryGrowthRates[category] || 0.12;
+  const configuredGrowthRate = categoryGrowthRates[category] || 0.12;
+  const annualGrowthRate = Number.isFinite(configuredGrowthRate) ? configuredGrowthRate : 0.12;
 
   // Calculate 6-month and 12-month growth factors
   const growth6M = 1 + (annualGrowthRate * 0.5);
